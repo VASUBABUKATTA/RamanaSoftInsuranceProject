@@ -1,0 +1,12 @@
+.background
+{
+  background-image: url('.//Images/p1.jpg');
+  background-size: 100%; /* Adjust as needed */
+  background-position: center;
+  background-repeat: no-repeat;
+  /* height: 300px; */
+}
+.image
+{
+  text-decoration: underline;
+}
