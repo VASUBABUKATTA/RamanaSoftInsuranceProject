@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { integerRege, integerRege6 } from './RegularExpressions'
+import { integerRege, integerRege6, marketValue, propertyValues, regexmarketValue, regexpropertyValues } from './RegularExpressions'
+import { Modal, Button } from 'react-bootstrap';
 
 export default function StrucureAndDetails() {
 
   const mystyle=
   {
-    color:'red',
-    backgroundColor:'cyan', 
+    color:'blue',
+    backgroundColor:'red', 
   }
 
   const mystyle1={
@@ -16,18 +17,21 @@ export default function StrucureAndDetails() {
     borderRadius:'10px',
   }
 
-  const mystyle2={
-    width:'80px',
-    marginLeft:"675px",
-  }
+//   const mystyle2={
+//     width:'80px',
+//     marginLeft:"675px",
+//   }
 
-  const mystyle3={
-    marginLeft:'200px',
-width:'100%',
+//   const mystyle3={
+//     marginLeft:'200px',
+// width:'100%',
 
-  }
+//   }
 
   let navigate=useNavigate();
+
+  const [showstate , setState] = useState(false);
+  const clickClose =()=> setState(false);
 
 
   const [values,setValues]=useState({
@@ -56,13 +60,16 @@ width:'100%',
       {
           const {name,value}=e.target;
           setValues({...values,[name]:value}); 
+          e.preventDefault();
+
+          
 
         
 
           // validation1
           if (name === "marketValue") {
-            if (!/^\d+$/.test(value)) {
-              setValidationErrors({ ...validationErrors, [name]: "Please enter only integer values only without space." });
+            if (!regexmarketValue.test(value)) {
+              setValidationErrors({ ...validationErrors, [name]: "Please enter the Value min 100000 and above only " });
             } else {
               setValidationErrors({ ...validationErrors, [name]: "" });
             }
@@ -70,8 +77,8 @@ width:'100%',
 
           // validation --2 :
           else if (name === "squareFeet") {
-            if (!/^\d+$/.test(value)) {
-              setValidationErrors({ ...validationErrors, [name]: "Please enter only integer values only without space." });
+            if (!regexpropertyValues.test(value)) {
+              setValidationErrors({ ...validationErrors, [name]: "Please enter the value Min 100 and above" });
             } else {
               setValidationErrors({ ...validationErrors, [name]: "" });
             }
@@ -132,7 +139,7 @@ width:'100%',
             {
               if(value === "yes")
               {
-                alert("You Are Not Eligiable For Insurance");
+                setState(true);
                setValues({...values,value:""}); 
               }
             }
@@ -140,47 +147,54 @@ width:'100%',
             else if(name === "person")
             {
               if(value === "no" ){
-                alert("You Are Not Eligiable For Insurance");
+                setState(true);
                 setValues({...values,value:""}); 
               }
             }
 
       }
 
-      const handleClick=()=>
+      const handleClick=(e)=>
   {
-    if(integerRege.test(values.marketValue) &&  integerRege.test(values.squareFeet) && integerRege6.test(values.pincode))
+    if(regexmarketValue.test(values.marketValue) &&  regexpropertyValues.test(values.squareFeet) && integerRege6.test(values.pincode))
     {
-      navigate("/getQuote",{state:{formValues : values}});
-    }
-
-    else if (integerRege.test(values.marketValue) >= 100000)
-    {
-      alert(" Current marketValue should have minimum 100000.Rs/- ");
-    }
+        navigate("/getQuote",{state:{formValues : values}});
+      }
+    
   }
 
 
   return (
     <div>
-      <h2 className='text-center' style={mystyle}> PROPERTY DETAILS </h2>
-        <div className='container' >
-          <h3 className='ms-5 my-4 row' style={mystyle1} >Strucure And Details : </h3>
-        </div>
-        <form action=""  onSubmit={handleClick} >
-<div className='mx-5 ' >
-        <div className='col-4 ' style={mystyle3}><br></br>
-            <label>Current MarketValue Of The Property :</label><span style={{marginLeft:'151px'}}>
-            <input type="text" name='marketValue' required className='' value={values.marketValue}  onChange={onSubmit}  placeholder='MIN 100000RS/-'/>  {validationErrors.marketValue && <span className="text-danger">{validationErrors.marketValue}</span>}<br></br>
+          <div> <h2 className='text-center' style={mystyle}> PROPERTY DETAILS </h2></div>
+
+          <form  onSubmit={handleClick} class='form-horizatol'  >
+
+            <div className='container'>
+            <h3 className='ms-3 my-4 container' style={mystyle1} >Strucure And Details : </h3>
+            <div className=' row'>
+
+            <div class="form-group ms-5" >
+          <label class="control-label col-lg-4 col-md-4 col-sm-6 col-6" >Current MarketValue :</label><span >
+            <input type="text" name='marketValue' class="form-control" style={{borderRadius:'10px',borderColor:'cyan'}} required className='' value={values.marketValue}  onChange={onSubmit}  placeholder='MIN 100000RS/-'/>  {validationErrors.marketValue && <span className="text-danger">{validationErrors.marketValue}</span>}<br></br>
            </span>
-            <label>Square Feet Of The Property :</label><span style={{marginLeft:'205px'}}>
-            <input type="text" name='squareFeet' required className='m-2'  value={values.squareFeet} onChange={onSubmit}/>  {validationErrors.squareFeet && <span className="text-danger">{validationErrors.squareFeet}</span>} <br></br>
+          </div>
+
+          <div class="form-group ms-5" >
+          <label class="control-label col-lg-4 col-md-4 col-sm-6 col-6">Square Feet Of The Property :</label><span >
+            <input type="text" name='squareFeet' class="form-control" style={{borderRadius:'10px',borderColor:'cyan'}} required className='m-2'  value={values.squareFeet} onChange={onSubmit}/>  {validationErrors.squareFeet && <span className="text-danger">{validationErrors.squareFeet}</span>} <br></br>
             </span>
-            <label>Enter pin Code :</label><span style={{marginLeft:'300px'}}>
-            <input type="text" name='pincode' required className='m-2'  value={values.pincode} onChange={onSubmit}/>  {validationErrors.pincode && <span className="text-danger">{validationErrors.pincode}</span>} <br></br>
+            </div>
+
+            <div class="form-group ms-5" >
+            <label class="control-label col-lg-4 col-md-4 col-sm-6 col-6">Enter pin Code :</label><span >
+            <input type="text" name='pincode'  class="form-control" style={{borderRadius:'10px',borderColor:'cyan'}} maxLength={6} required className='m-2'  value={values.pincode} onChange={onSubmit}/>  {validationErrors.pincode && <span className="text-danger">{validationErrors.pincode}</span>} <br></br>
           </span>
-            <label> Age Of The Building :</label> <span style={{marginLeft:'265px'}}>
-            <select id='age' required name='buildingAge' value={values.buildingAge} onChange={onSubmit} > 
+          </div>
+
+          <div class="form-group ms-5" >
+          <label class="control-label col-lg-4 col-md-4 col-sm-6 col-6"> Age Of The Building :</label> <span >
+            <select id='age' required name='buildingAge'  style={{borderRadius:'10px',borderColor:'cyan'}} value={values.buildingAge} onChange={onSubmit} > 
               <option value="">none</option>
               <option value="0 to 5 Years" >0 to 5 Years</option>
               <option value="5 to 10 Years" >5 to 10 Years</option>
@@ -190,8 +204,11 @@ width:'100%',
             </select> 
             {validationErrors.buildingAge && <span className="text-danger">{validationErrors.buildingAge}</span>}
             </span>  <br></br>
-            <label className='my-2'>Has Your Property Effected With Floods in Last 5years :</label> <span style={{marginLeft:'30px'}}>
-           <select id='effect' required name='effected' value={values.effected} onChange={onSubmit} > 
+          </div>
+
+          <div class="form-group ms-5" >
+          <label class="control-label col-lg-4 col-md-4 col-sm-6 col-12 my-3"> Has Your Property Effected With Floods in Last 5years :</label> <span >
+           <select id='effect'  name='effected'  style={{borderRadius:'10px',borderColor:'cyan'}} required value={values.effected} onChange={onSubmit} > 
                 <option value="">none</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
@@ -200,33 +217,52 @@ width:'100%',
             </span>
           </div>
 
-  </div>
-
           <div className='container'>
-          <h3 className='ms-5 mt-3' style={mystyle1} >Security Measurement Details:</h3>
+          <h3 className='ms-3 mt-3' style={mystyle1} >Security Measurement Details:</h3>
         </div>
-          <div className='container row '>
-            <div  style={mystyle3}>
-            <label className='ms-5 mt-4'>24 by 7 security :</label> <span style={{marginLeft:'275px'}}>
-            <select id='security' name='security' value={values.security} className='ms-3' onChange={onSubmit} required>      
+
+            </div>
+            <div class="form-group ms-5" >
+            <label className='ms-5 ' class="control-label col-lg-4 col-md-4 col-sm-6 col-6 my-4">24 by 7 security :</label> <span >
+            <select id='security' name='security' style={{borderRadius:'10px',borderColor:'cyan'}} value={values.security} className='ms-3' onChange={onSubmit} required>      
                 <option value="">none</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
            </select>
            {validationErrors.security && <span className="text-danger">{validationErrors.security}</span>}
            </span><br></br>
-            <label className='ms-5 mt-3' >Are You a Salaeried Person :</label><span style={{marginLeft:'194px'}}>
-            <select className='ms-4' id='person' name='person' value={values.person} onChange={onSubmit} required>      
+           </div>
+
+ <div class="form-group ms-5" >
+
+ <label className='ms-5' class="control-label col-lg-4 col-md-4 col-sm-6 col-6 mb-4" > Salaeried Person :</label><span >
+            <select className='ms-4' id='person' style={{borderRadius:'10px',borderColor:'cyan'}} name='person' value={values.person} onChange={onSubmit} required>      
                  <option value="">none</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
            </select>
            {validationErrors.person && <span className="text-danger">{validationErrors.person}</span>}
             </span>
+
+  </div>
+
             </div>
-            <button className='btn btn-outline-primary mt-5' style={mystyle2}  > Proceed </button>
-          </div>
+<div className='text-center'>
+<button className='btn btn-outline-primary mt-5' > Proceed </button>
+</div>
           </form>
+
+             <div>
+    <Modal show={showstate} onHide={clickClose} className='text-center'>
+                <Modal.Body>
+                  <h4 className='mt-5'>As Per The Terms and Conditions Your Home insurance Rejected </h4>
+                  <button className='btn btn-outline-primary my-5' onClick={clickClose}>Close</button>
+                  </Modal.Body>
+                
+            </Modal>
+    </div>
+
+  
     </div>
   )
 }
