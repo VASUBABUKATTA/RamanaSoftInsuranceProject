@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { integerRege, integerRege6, marketValue, propertyValues, regexmarketValue, regexpropertyValues } from './RegularExpressions'
-import { Modal, Button } from 'react-bootstrap';
+import {  integerRege6,  regexmarketValue, regexpropertyValues } from './RegularExpressions'
+
+import 'bootstrap/dist/css/bootstrap.min.css'; 
+import { Modal } from 'react-bootstrap';
 
 export default function StrucureAndDetails() {
 
@@ -30,7 +32,7 @@ export default function StrucureAndDetails() {
 
   let navigate=useNavigate();
 
-  const [showstate , setState] = useState(false);
+  const [showState , setState] = useState(false);
   const clickClose =()=> setState(false);
 
 
@@ -130,6 +132,7 @@ export default function StrucureAndDetails() {
             //     setValidationErrors({...validationErrors,[name]:" please select any option"})
             //   }
             //   else {
+              
             //     setValidationErrors({...validationErrors,[name]:""});
             //   }
             // }
@@ -175,7 +178,7 @@ export default function StrucureAndDetails() {
             <div className=' row'>
 
             <div class="form-group ms-5" >
-          <label class="control-label col-lg-4 col-md-4 col-sm-6 col-6" >Current MarketValue :</label><span >
+          <label class="control-label col-lg-4 col-md-4 col-sm-6 col-6" >Current MarketValue :</label><span className='ms-2' >
             <input type="text" name='marketValue' class="form-control" style={{borderRadius:'10px',borderColor:'cyan'}} required className='' value={values.marketValue}  onChange={onSubmit}  placeholder='MIN 100000RS/-'/>  {validationErrors.marketValue && <span className="text-danger">{validationErrors.marketValue}</span>}<br></br>
            </span>
           </div>
@@ -253,7 +256,7 @@ export default function StrucureAndDetails() {
           </form>
 
              <div>
-    <Modal show={showstate} onHide={clickClose} className='text-center'>
+    <Modal show={showState} onHide={clickClose} className='text-center'>
                 <Modal.Body>
                   <h4 className='mt-5'>As Per The Terms and Conditions Your Home insurance Rejected </h4>
                   <button className='btn btn-outline-primary my-5' onClick={clickClose}>Close</button>

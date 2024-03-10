@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
-import {  integerRege6, regexDob, regexEmail, regexFullName, regexHouseNo, regexPanCard, regexStreet, regexUsername } from './RegularExpressions';
+import {  useLocation, useNavigate } from 'react-router-dom';
+import {  integerRege6, regexHouseNo, regexPanCard, regexStreet, regexUsername } from './RegularExpressions';
+import { Modal } from 'react-bootstrap';
 
-
-function FillDetailsPage() 
+function FilldetailsPage() 
 {
 
 
@@ -13,6 +13,7 @@ function FillDetailsPage()
   // Access form data  from state
   const formData = state?.formData;
   const premiumData = state?.premiumData;
+  
 
   const marketValue = state?.marketValue;
   const buildingAge = state?.buildingAge;
@@ -20,6 +21,10 @@ function FillDetailsPage()
   const squareFeet = state?.squareFeet;
 
   
+  const [showstate , setState] = useState(false);
+
+
+  const clickClose =()=> setState(false);
 
   const [data, setData] = useState(
     {
@@ -30,14 +35,12 @@ function FillDetailsPage()
       pin:'',
       houseNo:'',
       street:'',
+        pincode:'',
+        houseno:'',
+        streetno:''
     }
   );
 
-  const [feilds,setFeilds] = useState({
-        pincode:'',
-        houseno:'',
-        streetno:'',
-  })
 
   const [validationErrors,setValidationErrors]=useState(
     {
@@ -54,9 +57,18 @@ function FillDetailsPage()
   }
   );
 
+//   let year;
+
+  // Date Checking :
+  const today = new Date();
+  const minDate = new Date(today.getFullYear() - 19, today.getMonth(), today.getDate());
+
+  const minDateFormatted = minDate.toISOString().split('T')[0];
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFeilds({...feilds, [name] : value });
+   
     setData({ ...data, [name]: value });
 
     // validation name:
@@ -80,18 +92,9 @@ function FillDetailsPage()
       }
     }
 
-    //validation dob :
-    if(name === "dob"){
-      if(regexDob.test(value)){
-        setValidationErrors({ ...validationErrors, [name]: "Please give valid date of birth" });
-      } else {
-        setValidationErrors({ ...validationErrors, [name]: "" });
-      }
-    }
+    
 
-
-
-       // current Address :
+       
 
       // validation for pincode :
       if(name === "pin"){
@@ -150,40 +153,55 @@ function FillDetailsPage()
       }
   };
 
+
+  const renderContent = () => {
+    if (data.address === 'no') {
+    return <div>
+           <h3 className='mt-3  'style={{color:'red',backgroundColor:'black', borderRadius: '10px'}}>Current Address Details :</h3>
+          <div className='ms-5'>
+          <div class="form-group">
+          <label class="control-label col-lg-3 col-md-3 col-sm-6 col-3" for="">Pincode :</label>
+          <input type='text' name='pincode' class="form-control"  maxLength={6} value={data.pincode} required style={{ borderRadius: '10px', borderColor: 'cyan',marginLeft:'' }} className='mt-3'  onChange={handleChange}/>  {validationErrors.pincode && <span className="text-danger">{validationErrors.pincode}</span>} <br></br>
+        </div>
+        <div class="form-group">
+        <label class="control-label col-lg-3 col-md-3 col-sm-6 col-3" for="">House No :</label>
+        <input type='text' name='houseno' class="form-control"  value={data.houseno} required style={{ borderRadius: '10px', borderColor: 'cyan',marginLeft:'' }} className='mt-3' onChange={handleChange} />  {validationErrors.houseno && <span className="text-danger">{validationErrors.houseno}</span>} <br></br>
+        </div>
+        <div class="form-group">
+        <label class="control-label col-lg-3 col-md-3 col-sm-6 col-3" for="">Street:</label>
+        <input type='text' name='streetno' class="form-control"  value={data.streetno} required style={{ borderRadius: '10px', borderColor: 'cyan' ,marginLeft:''}} className='mt-3' onChange={handleChange} /> {validationErrors.streetno && <span className="text-danger">{validationErrors.streetno}</span>} <br></br>
+        </div>
+        </div>
+    </div>;
+  }
+  
+};
+
+
+
   let navigate=useNavigate();
 
-  const handleSubmit =()=>
+  const handleSubmit =(e)=>
   {
-    if((!regexUsername.test(data.fullname) && !regexPanCard.test(data.pancard) && regexDob.test(data.dob) && !integerRege6.test(data.pin) && !regexHouseNo.test(data.houseNo) && !regexStreet.test(data.street)) || (!integerRege6.test(feilds.pincode) && !regexHouseNo.test(feilds.houseno) && !regexStreet.test(feilds.streetno))   )
-    {
-        navigate("/payment");
-    }
+    e.preventDefault(); 
+
+  if(data.address === "yes" && regexUsername.test(data.fullname) && regexPanCard.test(data.pancard) && integerRege6.test(data.pin) && regexHouseNo.test(data.houseNo) && regexStreet.test(data.street))
+  {
+   
+    navigate("/payment",{state:{marketValue,security,squareFeet,buildingAge,formData,premiumData}});
+
+  }
+  else if(data.address === "no" && regexUsername.test(data.fullname) && regexPanCard.test(data.pancard) && integerRege6.test(data.pin) && regexHouseNo.test(data.houseNo) && integerRege6.test(data.pincode) && regexHouseNo.test(data.houseno) && regexStreet.test(data.streetno)){
+   
+    
+    navigate("/payment",{state:{marketValue,security,squareFeet,buildingAge,formData,premiumData , userDetails : data}});
+  }
+  else
+  {setState(true);}
    
   }
 
-  const renderContent = () => {
-      if (data.address === 'no') {
-      return <div>
-             <h3 className='mt-3  'style={{color:'red',backgroundColor:'black', borderRadius: '10px'}}>Current Address Details :</h3>
-            <div className='ms-5'>
-            <div class="form-group">
-            <label class="control-label col-lg-3 col-md-3 col-sm-6 col-3" for="">Pincode :</label>
-            <input type='text' name='pincode' class="form-control"  maxLength={6} value={feilds.pincode} required style={{ borderRadius: '10px', borderColor: 'cyan',marginLeft:'' }} className='mt-3'  onChange={handleChange}/>  {validationErrors.pincode && <span className="text-danger">{validationErrors.pincode}</span>} <br></br>
-          </div>
-          <div class="form-group">
-          <label class="control-label col-lg-3 col-md-3 col-sm-6 col-3" for="">House No :</label>
-          <input type='text' name='houseno' class="form-control"  value={feilds.houseno} required style={{ borderRadius: '10px', borderColor: 'cyan',marginLeft:'' }} className='mt-3' onChange={handleChange} />  {validationErrors.houseno && <span className="text-danger">{validationErrors.houseno}</span>} <br></br>
-          </div>
-          <div class="form-group">
-          <label class="control-label col-lg-3 col-md-3 col-sm-6 col-3" for="">Street:</label>
-          <input type='text' name='streetno' class="form-control"  value={feilds.streetno} required style={{ borderRadius: '10px', borderColor: 'cyan' ,marginLeft:''}} className='mt-3' onChange={handleChange} /> {validationErrors.streetno && <span className="text-danger">{validationErrors.streetno}</span>} <br></br>
-          </div>
-          </div>
-      </div>;
-    }
-    return null;
-  };
-
+  
 
 
   return (
@@ -193,7 +211,7 @@ function FillDetailsPage()
       </h1>
     <div class="row ">
       <div class="col-lg-4 col-md-4  col-sm-6 col-12 ">
-      <h3 className='my-3 text-primary ' style={{backgroundColor:'cyan', borderRadius: '10px'}}>Property Details :</h3>
+      <h3 className='my-3 text-primary ms-2 ' style={{backgroundColor:'cyan', borderRadius: '10px'}}>Property Details :</h3>
           <div className='ms-5 my-4' >
 
             <h6 ><p>Current MarketValue : {marketValue}</p></h6>
@@ -202,11 +220,11 @@ function FillDetailsPage()
             <h6><p>Security  : {security}</p></h6>
 
           </div>
-          <h3 className='my-3 text-primary' style={{backgroundColor:'cyan', borderRadius: '10px'}}>Premium Details :</h3>
+          <h3 className='my-3 text-primary ms-2' style={{backgroundColor:'cyan', borderRadius: '10px'}}>Premium Details :</h3>
           <div className='ms-5 my-4' >
 
-                <h6><p>No Of Years  : {premiumData.year}</p></h6>
-                <h6><p>Premium Amount  : {premiumData.Premium}</p></h6>
+                <h6><p>No Of Years  : {premiumData?.year}</p></h6>
+                <h6><p>Premium Amount  : {premiumData?.Premium}</p></h6>
 
           </div>
 
@@ -237,15 +255,15 @@ function FillDetailsPage()
     </div>
     <div class="form-group">
     <label class="control-label  col-lg-3 col-md-3 col-sm-6 col-3" for="">Dtae Of Birth</label>
-                <input type='date' name='dob' class="form-control"  value={data.dob} required style={{ borderRadius: '10px', borderColor: 'cyan' }} className='mt-3'  onChange={handleChange} />  {validationErrors.dob && <span className="text-danger">{validationErrors.dob}</span>} <br></br>
+                <input type='date' name='dob' class="form-control" max={minDateFormatted}  value={data.dob} required style={{ borderRadius: '10px', borderColor: 'cyan' }} className='mt-3'  onChange={handleChange} />  {validationErrors.dob && <span className="text-danger">{validationErrors.dob}</span>} <br></br>
      </div>         
       <div class="form-group"> 
       <label class="control-label col-lg-3 col-md-3 col-sm-6 col-3" for="">Email :</label>
-                <input type='text' name='email' class="form-control" required style={{ borderRadius: '10px', borderColor: 'cyan' }} className='mt-3' value={formData.email}  onChange={handleChange} ></input>  <br></br>
+                <input type='text' name='email' class="form-control" required style={{ borderRadius: '10px', borderColor: 'cyan' }} className='mt-3' value={formData?.email || ''}  onChange={handleChange} ></input>  <br></br>
       </div>
       <div class="form-group">
       <label class="control-label col-lg-3 col-md-3 col-sm-6 col-3" for="">Mobile No :</label>
-                <input type='text' name='mobno'class="form-control" required style={{ borderRadius: '10px', borderColor: 'cyan' }} className='mt-3' value={formData.mobileno}  onChange={handleChange} /><br></br>
+                <input type='text' name='mobno'class="form-control" required style={{ borderRadius: '10px', borderColor: 'cyan' }} className='mt-3' value={formData?.mobileno || ''}  onChange={handleChange} /><br></br>
       </div>      
                 </div>
 
@@ -274,14 +292,16 @@ function FillDetailsPage()
          </div> 
 
 <div>
-{renderContent()}
+      
+      
+      {renderContent()}
          
           
 
 </div>
 
 <div className='text-center'>
-          <button className='btn btn-outline-primary mt-3 '  style={{marginLeft:''}}>Proceed</button>
+          <button className='btn btn-outline-primary mt-3 '  >Make Payment</button>
     </div>
 
                 </form>
@@ -289,10 +309,23 @@ function FillDetailsPage()
             </div>
       </div> 
     
+
+    </div>
+
+    <div>
+    <div>
+           <Modal show={showstate} onHide={clickClose} className='text-center' >
+                <Modal.Body>
+                  <h4 className='mt-5'>Please Fill The Details Properly</h4>
+                  <button className='btn btn-outline-primary my-5' onClick={clickClose} >Close</button>
+                </Modal.Body>
+               
+            </Modal>
+    </div>
     </div>
     
   </div>	
   )
 }
 
-export default FillDetailsPage
+export default FilldetailsPage
