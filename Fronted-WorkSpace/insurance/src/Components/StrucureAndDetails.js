@@ -97,7 +97,7 @@ export default function StrucureAndDetails() {
 
           else if (name === "pincode") {
             if (!/^\d{6}$/.test(value)) {
-              setValidationErrors({ ...validationErrors, [name]: "Please enter only integer values only without space." });
+              setValidationErrors({ ...validationErrors, [name]: "Please enter integer values only without space." });
             } else {
               setValidationErrors({ ...validationErrors, [name]: "" });
             }
@@ -112,37 +112,6 @@ export default function StrucureAndDetails() {
             }
           }
 
-          // // validation --- 5:
-          //   else if(name === "effected"){
-          //     if(value === "1"){
-          //       setValidationErrors({...validationErrors,[name]:"please select any option."});
-          //     }
-          //     else {
-          //       setValidationErrors({...validationErrors,[name]: ""});
-          //     }
-          //   }
-            
-
-            // // validation --- 6:
-            // else if (name === "security"){
-            //   if(value === "1"){
-            //     setValidationErrors({...validationErrors,[name]:"pleas select any option. "});
-            //   }
-            //   else {
-            //     setValidationErrors({...validationErrors,[name]:""});
-            //   }
-            // }
-
-            // // validation --- 7:
-            // else if (name === "person"){
-            //   if(value === "1"){
-            //     setValidationErrors({...validationErrors,[name]:" please select any option"})
-            //   }
-            //   else {
-              
-            //     setValidationErrors({...validationErrors,[name]:""});
-            //   }
-            // }
 
             // validation for floods :
             else if(name === "effected") 
@@ -253,7 +222,7 @@ export default function StrucureAndDetails() {
 
  <div class="form-group ms-5" >
 
- <label className='ms-5' class="control-label col-lg-4 col-md-4 col-sm-6 col-6 mb-4" > Salaeried Person :</label><span >
+ <label className='ms-5' class="control-label col-lg-4 col-md-4 col-sm-6 col-6 mb-4" > Salaried Person :</label><span >
             <select className='ms-4' id='person' style={{borderRadius:'10px',borderColor:'cyan'}} name='person' value={values.person} onChange={onSubmit} required>      
                  <option value="">none</option>
                 <option value="yes">Yes</option>

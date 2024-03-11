@@ -382,7 +382,7 @@ function GetQuote()
             }
           }
 
-          
+        
 
   }
 
@@ -391,7 +391,9 @@ function GetQuote()
   // navigating signup page :
   const navigate=useNavigate();
 
-  const handleClick=()=>{
+  const handleClick=(e)=>{
+
+    e.preventDefault();
 
     if(regexUsername.test(feilds.name) && regexMobileNo.test(feilds.mobileno) && regexEmail.test(feilds.email) && regexPassword.test(feilds.password))
       {
@@ -400,6 +402,7 @@ function GetQuote()
       sessionStorage.setItem('Premium', Premium.toString());
         navigate("/fill", { state: { formData: feilds, premiumData: { year, Premium } ,  marketValue ,buildingAge , security , squareFeet } })
       }
+
   }
 
 const PreviewStep =()=>
@@ -412,7 +415,7 @@ const PreviewStep =()=>
     <div>
       <div className='container'>
         <h1 className='mt-4 text-center' style={{borderRadius:'15px',color:'blue',backgroundColor:'red' }}> Premium Details </h1>
-        {/* <h3 className='mt-2 mx-5 p-2 text-center '> Your Property Value :  {marketValue} </h3> */}
+        
       </div>
       <div >
         <h3 className='container  mt-4 mb-5' style={{textDecoration:'underline',color:'red',textDecorationColor:'black'}}>Select No Of Years :</h3>
@@ -466,7 +469,7 @@ const PreviewStep =()=>
     
     <div className='container text-center my-5'>
 
-      <button className='btn btn-primary me-5'type='button' onClick={PreviewStep}>Preview</button>
+      <button className='btn btn-primary me-5'type='button' onClick={PreviewStep}>Back</button>
 
       <button className='btn btn-primary 'type='button' onClick={handleSignUp}>Proceed</button>
 

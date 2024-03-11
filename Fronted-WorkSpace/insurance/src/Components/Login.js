@@ -2,7 +2,7 @@ import Header from './Header'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { regexPassword, regexUsername } from './RegularExpressions'
-
+import p5 from '../Components/images/p5.png'
 
 
 function Login() {
@@ -40,7 +40,15 @@ function Login() {
       height:'100%',
     }
 
-    
+    const footer={
+      height:'45px',
+     marginTop:'10px',
+      borderRadius:'10px',
+      backgroundColor:' black',
+  	textAlign: 'center',
+  	color: 'white',
+  	lineHeight: '38px',
+    }
 
     let navigate=useNavigate();
 
@@ -110,6 +118,7 @@ function Login() {
 
 
     return (
+      <div>
         <div className='background ' >
     
           {/* Header */}
@@ -146,6 +155,8 @@ function Login() {
             </div>
                     
                 </div>
+
+   <div>        
           
           <div class="container-fluid mt-5">
                 
@@ -154,7 +165,7 @@ function Login() {
                     <div class="col-lg-8 col-md-8  col-sm-8 col-12">
                  
                     <p style={content} className='ms-5'>
-                    Property insurance refers to a type of insurance coverage that protects against financial losses resulting from damage or loss of property.
+                    &nbsp; &nbsp; &nbsp; &nbsp; Property insurance refers to a type of insurance coverage that protects against financial losses resulting from damage or loss of property.
     
     It provides financial protection for residential, commercial, or industrial properties against perils such as fire, theft, vandalism, natural disasters, and other covered events.
     
@@ -180,7 +191,7 @@ function Login() {
                     </div> 
                     <div class="col-lg-4 col-md-4 col-sm-4 col-12 mt-5">
             <div  className=''>
-                <img src={process.env.PUBLIC_URL+"/p5.png"} alt="my pic" style={image} ></img>
+                <img src={p5} alt="my pic" style={image} ></img>
             </div> 
                     </div> 
     
@@ -196,16 +207,24 @@ function Login() {
               <p className='ms-5'style={{textAlign:'justify', fontSize:'15px',}}>Designed for tenants, renters insurance covers the policyholder's personal property and liability within a rented property.</p>
             </li>
           </ul>
-        </diV>
-                    
-                </div>
-                
+        </diV>        
+         </div>
+        
             </div>	
+            <div>
+        	<footer style={footer}>
+       <span style={{fontSize:'20px'}} >All Right Reserved 2024 &copy;RamanaSoft Insurance Company </span>
+        </footer>
+     	 </div>
       
     </div>
-   
-    
+   </div>
 
+   </div>  
+ <div>
+   
+   </div>
+   
     </div>
   )
 }

@@ -57,7 +57,7 @@ function FilldetailsPage()
 
   // Date Checking :
   const today = new Date();
-  const minDate = new Date(today.getFullYear() - 19, today.getMonth(), today.getDate());
+  const minDate = new Date(today.getFullYear() - 21, today.getMonth(), today.getDate());
 
   const minDateFormatted = minDate.toISOString().split('T')[0];
 
@@ -82,7 +82,7 @@ function FilldetailsPage()
      if(name === "pancard"){
       if(!regexPanCard.test(value))
       {
-        setValidationErrors({ ...validationErrors, [name]: "Enter Pancard No" });
+        setValidationErrors({ ...validationErrors, [name]: "Enter Pancard No in UpperCase Letters " });
       } else {
         setValidationErrors({ ...validationErrors, [name]: "" });
       }
@@ -235,7 +235,7 @@ function FilldetailsPage()
                 <h3 className='mt-3 ' style={{color:'red',backgroundColor:'black', borderRadius: '10px'}}>Enter PanCard Details :</h3>
                     <div className='ms-5' >
     <div class="form-group" >
-    <label class="control-label col-lg-3 col-md-3 col-sm-6 col-3" for="">FullName :</label>
+    <label class="control-label col-lg-3 col-md-3 col-sm-6 col-3" for="">FullName (as per PanCard) :</label>
                 <select id='salutation' name='salutation'    required style={{ borderRadius: '10px', borderColor: 'cyan' }} className='mt-3' onChange={handleChange}>
                 <option value=''>none</option>
                 <option value='Mr'>Mr</option>
