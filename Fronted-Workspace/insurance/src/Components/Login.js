@@ -1,11 +1,38 @@
 import Header from './Header'
-import React, { useState } from 'react'
+import React, {useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { regexPassword, regexUsername } from './RegularExpressions'
+import p5 from '../Components/images/p5.png'
+import PropertyInsuranceService from './Service/PropertyInsuranceService'
+import { Modal } from 'react-bootstrap'
+import {GoogleLogin} from 'react-google-login';
 
+
+const clientId = "246541673533-e90kj0pumgndrmt51j27v853d3pkon00.apps.googleusercontent.com";
 
 
 function Login() {
+  // var i = 0 ;
+
+  const [showState , setshowState] = useState(false);
+  const clickClose =()=> {
+    setshowState(false) ;
+    window.location.reload();
+  }
+
+  const [userData, setUserData] = useState(null);
+
+  const onSuccess = (res) => {
+    console.log("LOGIN SUCCESS! Current user: ", res.profileObj);
+   // i++;
+    // navigate("/login",{state:{i}}) 
+    setshowState(true);
+    setUserData(res.profileObj);
+    console.log(userData);
+  }
+    const onFailure = (res) => {
+     console.log("LOGIN FAILED! res: ", res);
+    
+  }
 
     const mystyle=
     {
@@ -27,8 +54,9 @@ function Login() {
       {
           border:'2px solid black',
           borderRadius:'10px',
-          backgroundColor:'#12CBC4',
+          backgroundColor: '#12CBC4',
           boxShadow:'2px 2px 3px 1px',
+          diplay:'flex'
       }
       
    
@@ -40,20 +68,25 @@ function Login() {
       height:'100%',
     }
 
-    
+    const footer={
+      height:'45px',
+     marginTop:'10px',
+      borderRadius:'10px',
+      backgroundColor:' black',
+  	textAlign: 'center',
+  	color: 'white',
+  	lineHeight: '38px',
+    }
 
     let navigate=useNavigate();
 
     
     const [values, setValues] = useState({
-      name: '',
+      mobileno: '',
       password: '',
     });
   
-    const [validationErrors, setValidationErrors] = useState({
-      name: '',
-      password: '',
-    });
+   
 
 
     const change=(e)=>
@@ -61,55 +94,52 @@ function Login() {
           const {name,value}=e.target;
           setValues({...values,[name]:value});
   
-          // validation name:
-          if(name === "name"){
-            if(!regexUsername.test(value))
-            {
-              setValidationErrors({ ...validationErrors, [name]: "UserName must be 3 or more charecters ex: abc" });
-            } else {
-              setValidationErrors({ ...validationErrors, [name]: "" });
-            }
-          }
-  
-            // validation for password :
-            if(name === "password")
-            {
-              if(!regexPassword.test(value))
-              {
-                setValidationErrors({ ...validationErrors, [name]: "password minimum 8 charecters 1 upper speacial symbol and1 digit ex: AbcDefg@121" });
-              } else {
-                setValidationErrors({ ...validationErrors, [name]: "" });
-              }
-            }
-  
     }
-      
+  
+    const [data,setData]=useState();
+   
 
 
-    const HandleSubmit=()=>
+    // console.log(data);
+
+    const HandleSubmit=(e)=>
     {
-      if(regexUsername.test(values.name) && regexPassword.test(values.password))
-      {
-        navigate("/login")
-      }
-      else 
-      {
-        alert("Invalid Username or Password ")
-      }
+      e.preventDefault();
+      console.log("values =>"+JSON.stringify(values));
 
+      async function performLogin(){
+      
+        const response = await PropertyInsuranceService.login(values);
+        //console.log(response)
+        const loginResponse = response.data; 
+        // setData( loginResponse);
+        console.log('Login Response:', loginResponse);
+        // i++;
+        if (loginResponse === "Login successful!") 
+        { 
+          
+          // setshowState(true);
+           navigate("/login",{state:{values:values}}) 
+        } 
+        else 
+        {
+          setData( loginResponse);
+        }
+    }
+    performLogin();
+      
+      //  window.location.reload();
     }
 
     const handleClick=()=>
     {
       navigate("/property");
     }
-
-  
-      
-  
+   
 
 
     return (
+      <div>
         <div className='background ' >
     
           {/* Header */}
@@ -127,25 +157,47 @@ function Login() {
                     <div class="col-lg-4 col-md-6 col-sm-6 col-7 mt-5 text-center"  >
               
               <div style={{marginTop:'100px'}} >
-            <form   onSubmit={HandleSubmit}  class='form-inline 'style={mystyle3}  >
-    
-            <div class="form-group mt-4 " >
-              <label class="control-label col-lg-4 col-md-6 col-sm-6 col-12 mx-auto">UserName :</label>
-                  <input className='text-center my-3' type='text' name='name'  style={{borderRadius:'10px',borderColor:'cyan'}} placeholder='Name.... Ex: abc .'  required value={values.name}   onChange={change} /> {validationErrors.name && <h6 className="text-danger">{validationErrors.name}</h6>}   <br></br>
-            </div>
-    
-            <div class="form-group mt-2" >
-              <label class="control-label col-lg-4 col-md-6 col-sm-6 col-12">Password :</label>
-                  <input className='text-center my-3' type='password' name='password'  style={{borderRadius:'10px',borderColor:'cyan'}} placeholder='Password.... Ex: AbcDefg@123.' required  onChange={change}/>   {validationErrors.password && <h6 className="text-danger">{validationErrors.password}</h6>} <br></br>
-            </div>
-    
-                  <button className='btn btn-primary w-100px text-center mt-3 mb-3'>Login</button>
-    
-            </form>
+              <div style={mystyle3}>
+  <form onSubmit={HandleSubmit} class='form-inline'>
+    <div class="form-group mt-4 mx-auto">
+      <label class="control-label col-lg-4 col-md-6 col-sm-6 col-12">Mobile No :</label>
+      <input className='text-center my-3' type='text' name='mobileno' maxLength={10} style={{ borderRadius: '10px', borderColor: 'cyan' }}  placeholder='mobileno.... Ex: 7698888123.'  required value={values.mobileno} onChange={change} /> <br></br>
+    </div>
+
+    <div class="form-group mt-2 mx-auto">
+      <label class="control-label col-lg-4 col-md-6 col-sm-6 col-12">Password :</label>
+      <input className='text-center my-3' type='password' name='password' style={{ borderRadius: '10px', borderColor: 'cyan' }} placeholder='Password.... Ex: abc@123.' required onChange={change} /> <br></br>
+    </div>
+
+    <div>
+      {data !== "Login successful!" && <h4 style={{ color: 'red' }}>{data}</h4>}
+    </div>
+
+    <div class="d-flex justify-content-center w-100">
+      <button className='btn btn-primary text-center my-3 me-2'>Login</button>
+      <div id="signInButton" className='my-3 ms-2'>
+        <GoogleLogin
+          clientId={clientId}
+          buttonText="Login"
+          onSuccess={onSuccess}
+          onFailure={onFailure}
+          cookiePolicy={'single_host_origin'}
+          issignedIn={true}
+        />
+      </div>
+    </div>
+  </form>
+</div>
+
+
+            
+           
                     </div> 
             </div>
                     
                 </div>
+
+   <div>        
           
           <div class="container-fluid mt-5">
                 
@@ -154,7 +206,7 @@ function Login() {
                     <div class="col-lg-8 col-md-8  col-sm-8 col-12">
                  
                     <p style={content} className='ms-5'>
-                    Property insurance refers to a type of insurance coverage that protects against financial losses resulting from damage or loss of property.
+                    &nbsp; &nbsp; &nbsp; &nbsp; Property insurance refers to a type of insurance coverage that protects against financial losses resulting from damage or loss of property.
     
     It provides financial protection for residential, commercial, or industrial properties against perils such as fire, theft, vandalism, natural disasters, and other covered events.
     
@@ -180,7 +232,7 @@ function Login() {
                     </div> 
                     <div class="col-lg-4 col-md-4 col-sm-4 col-12 mt-5">
             <div  className=''>
-                <img src={process.env.PUBLIC_URL+"/p5.png"} alt="my pic" style={image} ></img>
+                <img src={p5} alt="my pic" style={image} ></img>
             </div> 
                     </div> 
     
@@ -196,15 +248,33 @@ function Login() {
               <p className='ms-5'style={{textAlign:'justify', fontSize:'15px',}}>Designed for tenants, renters insurance covers the policyholder's personal property and liability within a rented property.</p>
             </li>
           </ul>
-        </diV>
-                    
-                </div>
-                
+        </diV>        
+         </div>
+        
             </div>	
+            <div>
+        	<footer style={footer}>
+       <span style={{fontSize:'20px'}} >All Right Reserved 2024 &copy;RamanaSoft Insurance Company </span>
+        </footer>
+     	 </div>
       
     </div>
+   </div>
+
+   </div>  
+ <div>
+
+
    
-    
+   </div>
+   
+   <Modal show={showState} onHide={clickClose} className='text-center'>
+                <Modal.Body>
+                  <h4 className='mt-5'> <h1 className='text-primary'>Login Successful</h1> </h4>
+                  <button className='btn btn-outline-primary my-5' onClick={clickClose}>Close</button>
+                  </Modal.Body>
+                
+            </Modal>
 
     </div>
   )

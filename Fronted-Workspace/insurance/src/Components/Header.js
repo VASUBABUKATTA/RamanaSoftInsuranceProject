@@ -1,6 +1,6 @@
 import React from 'react'
 import { useNavigate } from 'react-router-dom';
-
+import p4 from '../Components/images/p4.jpeg'
 
 
 function Header() {
@@ -20,7 +20,7 @@ function Header() {
       <div class="d-flex" style={{backgroundColor:'red'}}>
 
 				<div className="ms-5 me-auto" >
-        <img class="mx-3 py-2 " src={process.env.PUBLIC_URL+"/p6.jpeg"} alt="my pic" style={{width:'50px',height:'50px',borderRadius:'5px',cursor:'pointer'}}></img>
+        <img class="mx-3 py-2 " src={p4} alt="my pic" style={{width:'40px',height:'50px',borderRadius:'5px',cursor:'pointer'}}></img>
         <span className='col-3' style={{color:'blue',fontSize:'25px'}}>RamanaSoft Insurance Company</span>
 				</div> 
 
